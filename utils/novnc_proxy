@@ -184,7 +184,7 @@ fi
 
 echo "Starting webserver and WebSockets proxy on port ${PORT}"
 #${HERE}/websockify --web ${WEB} ${CERT:+--cert ${CERT}} ${PORT} ${VNC_DEST} &
-${WEBSOCKIFY} ${SYSLOG_ARG} ${SSLONLY} --web ${WEB} ${CERT:+--cert ${CERT}} ${KEY:+--key ${KEY}} ${source_ip}:${PORT} ${VNC_DEST} ${HEARTBEAT_ARG} ${IDLETIMEOUT_ARG} ${RECORD_ARG} ${TIMEOUT_ARG} ${WEBSOCKET_ARGS} &
+${WEBSOCKIFY} --verbose ${SYSLOG_ARG} ${SSLONLY} --web ${WEB} ${CERT:+--cert ${CERT}} ${KEY:+--key ${KEY}} ${source_ip}:${PORT} ${VNC_DEST} ${HEARTBEAT_ARG} ${IDLETIMEOUT_ARG} ${RECORD_ARG} ${TIMEOUT_ARG} ${WEBSOCKET_ARGS} &
 proxy_pid="$!"
 sleep 1
 if ! ps -p ${proxy_pid} >/dev/null; then
@@ -195,9 +195,9 @@ fi
 
 echo -e "\n\nNavigate to this URL:\n"
 if [ "x$SSLONLY" == "x" ]; then
-    echo -e "    http://${source_ip}:${PORT}/vnc.html?host=$(hostname)&port=${PORT}\n"
+    echo -e "    http://${source_ip}:${PORT}/vnc.html?host=${source_ip}&port=${PORT}\n"
 else
-    echo -e "    https://${source_ip}:${PORT}/vnc.html?host=$(hostname)&port=${PORT}\n"
+    echo -e "    https://${source_ip}:${PORT}/vnc.html?host=${source_ip}&port=${PORT}\n"
 fi
 
 echo -e "Press Ctrl-C to exit\n\n"
