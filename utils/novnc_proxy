@@ -35,6 +35,7 @@ usage() {
     echo "    --timeout SEC         after SEC seconds exit when not connected"
     echo "    --idle-timeout SEC    server exits after SEC seconds if there are no"
     echo "                          active connections"
+    echo "    --websocket_args      additional argument for websocket"
     echo "                                    "
     exit 2
 }
@@ -55,6 +56,7 @@ SYSLOG_ARG=""
 HEARTBEAT_ARG=""
 IDLETIMEOUT_ARG=""
 TIMEOUT_ARG=""
+WEBSOCKET_ARGS=""
 
 die() {
     echo "$*"
@@ -89,6 +91,7 @@ while [ "$*" ]; do
     --heartbeat) HEARTBEAT_ARG="--heartbeat ${OPTARG}"; shift ;;
     --idle-timeout) IDLETIMEOUT_ARG="--idle-timeout ${OPTARG}"; shift ;;
     --timeout) TIMEOUT_ARG="--timeout ${OPTARG}"; shift ;;
+    --websocket_args) WEBSOCKET_ARGS="${OPTARG}"; shift ;;
     -h|--help) usage                              ;;
     -*) usage "Unknown chrooter option: ${param}" ;;
     *) break                                      ;;
@@ -181,7 +184,7 @@ fi
 
 echo "Starting webserver and WebSockets proxy on port ${PORT}"
 #${HERE}/websockify --web ${WEB} ${CERT:+--cert ${CERT}} ${PORT} ${VNC_DEST} &
-${WEBSOCKIFY} ${SYSLOG_ARG} ${SSLONLY} --web ${WEB} ${CERT:+--cert ${CERT}} ${KEY:+--key ${KEY}} ${source_ip}:${PORT} ${VNC_DEST} ${HEARTBEAT_ARG} ${IDLETIMEOUT_ARG} ${RECORD_ARG} ${TIMEOUT_ARG} &
+${WEBSOCKIFY} ${SYSLOG_ARG} ${SSLONLY} --web ${WEB} ${CERT:+--cert ${CERT}} ${KEY:+--key ${KEY}} ${source_ip}:${PORT} ${VNC_DEST} ${HEARTBEAT_ARG} ${IDLETIMEOUT_ARG} ${RECORD_ARG} ${TIMEOUT_ARG} ${WEBSOCKET_ARGS} &
 proxy_pid="$!"
 sleep 1
 if ! ps -p ${proxy_pid} >/dev/null; then
